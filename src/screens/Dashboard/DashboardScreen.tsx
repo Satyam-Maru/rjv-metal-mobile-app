@@ -4,8 +4,9 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { theme } from '../../theme';
-import { Package, ArrowUpRight, ArrowDownLeft, History, Users, ChevronRight } from 'lucide-react-native';
-import { DashboardService } from '../../services/api';
+import { Package, ArrowUpRight, ArrowDownLeft, History, Users, ChevronRight, LogOut } from 'lucide-react-native';
+import { DashboardService, authEvents, AUTH_TOKEN_KEY } from '../../services/api';
+import { IS_LOGGED_IN_KEY } from '../Auth/AuthScreen';
 import LineChart from 'react-native-chart-kit/dist/line-chart';
 import PieChart from 'react-native-chart-kit/dist/PieChart';
 import { useLanguage } from '../../context/LanguageContext';
@@ -57,6 +58,17 @@ const DashboardScreen = () => {
       console.error('Stats fetch error:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem(IS_LOGGED_IN_KEY);
+      await AsyncStorage.removeItem(AUTH_TOKEN_KEY);
+      await AsyncStorage.removeItem('@rjv_metal_user_role');
+      authEvents.emitLogout();
+    } catch (e) {
+      console.error('Error logging out:', e);
     }
   };
 
@@ -247,6 +259,16 @@ const DashboardScreen = () => {
             <Text style={styles.emptyText}>{t.noCategoryData}</Text>
           )}
         </View>
+
+        {/* Logout Button */}
+        <TouchableOpacity
+          style={styles.logoutButton}
+          onPress={handleLogout}
+          activeOpacity={0.8}
+        >
+          <LogOut size={20} color={theme.colors.error} style={{ marginRight: theme.spacing.xs }} />
+          <Text style={styles.logoutButtonText}>{t.logoutBtn}</Text>
+        </TouchableOpacity>
 
         {loading && (
           <View style={styles.loadingContainer}>
@@ -451,7 +473,25 @@ const styles = StyleSheet.create({
   loadingText: {
     ...theme.typography.caption,
     marginTop: 8,
-  }
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFF5F5', // Soft red background
+    borderWidth: 1,
+    borderColor: '#FFE3E3', // Soft red border
+    paddingVertical: 14,
+    borderRadius: theme.borderRadius.md,
+    marginTop: theme.spacing.md,
+    marginBottom: 40,
+  },
+  logoutButtonText: {
+    ...theme.typography.body,
+    fontSize: 16,
+    color: theme.colors.error,
+    fontWeight: '700',
+  },
 });
 
 export default DashboardScreen;

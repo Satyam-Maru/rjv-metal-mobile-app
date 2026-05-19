@@ -8,7 +8,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { theme } from './src/theme';
 import { LayoutDashboard, Package, ArrowLeftRight, History as HistoryIcon, Users } from 'lucide-react-native';
-import Toast from 'react-native-toast-message';
+import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import { LanguageProvider, useLanguage } from './src/context/LanguageContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -21,6 +21,7 @@ import ManagementScreen from './src/screens/Management/ManagementScreen';
 import AuthScreen, { IS_LOGGED_IN_KEY } from './src/screens/Auth/AuthScreen';
 import AdminCustomersScreen from './src/screens/Admin/AdminCustomersScreen';
 import AdminCustomerDetailsScreen from './src/screens/Admin/AdminCustomerDetailsScreen';
+import { authEvents } from './src/services/api';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -115,11 +116,69 @@ function AppStack() {
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+const toastConfig = {
+  success: (props: any) => (
+    <BaseToast
+      {...props}
+      style={{ borderLeftColor: theme.colors.success, height: 75, width: '92%' }}
+      contentContainerStyle={{ paddingHorizontal: 16 }}
+      text1Style={{
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#1a1a1a'
+      }}
+      text2Style={{
+        fontSize: 14,
+        color: '#555'
+      }}
+    />
+  ),
+  error: (props: any) => (
+    <ErrorToast
+      {...props}
+      style={{ borderLeftColor: theme.colors.error, height: 75, width: '92%' }}
+      contentContainerStyle={{ paddingHorizontal: 16 }}
+      text1Style={{
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#1a1a1a'
+      }}
+      text2Style={{
+        fontSize: 14,
+        color: '#555'
+      }}
+    />
+  ),
+  info: (props: any) => (
+    <BaseToast
+      {...props}
+      style={{ borderLeftColor: theme.colors.primary, height: 75, width: '92%' }}
+      contentContainerStyle={{ paddingHorizontal: 16 }}
+      text1Style={{
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#1a1a1a'
+      }}
+      text2Style={{
+        fontSize: 14,
+        color: '#555'
+      }}
+    />
+  )
+};
+
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
   const [splashVisible, setSplashVisible] = useState(true);
   const fadeAnim = useState(new Animated.Value(1))[0];
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+  useEffect(() => {
+    const unsubscribe = authEvents.subscribe(() => {
+      setIsLoggedIn(false);
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     async function prepare() {
@@ -196,7 +255,7 @@ export default function App() {
               <Text style={styles.loadingText}>Loading Premium Experience...</Text>
             </Animated.View>
           )}
-          <Toast />
+          <Toast config={toastConfig} />
         </View>
       </SafeAreaProvider>
     </LanguageProvider>

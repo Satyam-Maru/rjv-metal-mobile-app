@@ -3,7 +3,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL; 
 
-export const AUTH_TOKEN_KEY = process.env.EXPO_PUBLIC_AUTH_TOKEN_KEY;
+export const AUTH_TOKEN_KEY = process.env.EXPO_PUBLIC_AUTH_TOKEN_KEY || '@rjv_metal_auth_token';
+
+export const authEvents = {
+  listeners: [] as Array<() => void>,
+  subscribe(listener: () => void) {
+    this.listeners.push(listener);
+    return () => {
+      this.listeners = this.listeners.filter(l => l !== listener);
+    };
+  },
+  emitLogout() {
+    this.listeners.forEach(listener => listener());
+  }
+};
 
 const api = axios.create({
   baseURL: API_BASE_URL,

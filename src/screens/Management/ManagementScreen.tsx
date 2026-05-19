@@ -11,7 +11,7 @@ import { useLanguage } from '../../context/LanguageContext';
 type ManagementTab = 'supplier' | 'customer' | 'category' | 'location';
 
 const ManagementScreen = () => {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const [activeTab, setActiveTab] = useState<ManagementTab>('supplier');
   const [data, setData] = useState<any[]>([]);
   const [extraData, setExtraData] = useState<any[]>([]); // For locations when adding entities
@@ -23,6 +23,7 @@ const ManagementScreen = () => {
   const [editingItem, setEditingItem] = useState<any>(null);
   const [newName, setNewName] = useState('');
   const [selectedLocationId, setSelectedLocationId] = useState<number | null>(null);
+  const [newLocationName, setNewLocationName] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
   // UI State
@@ -32,8 +33,8 @@ const ManagementScreen = () => {
   const entityNames: Record<ManagementTab, string> = {
     supplier: t.supplier,
     customer: t.customer,
-    category: t.categories, // Using plural categories or t.category if available? Wait, t.categories is 'શ્રેણી' in GU.
-    location: t.locations   // Using plural locations or t.location if available?
+    category: t.category,
+    location: t.location
   };
 
   const activeEntityName = entityNames[activeTab];
@@ -108,6 +109,7 @@ const ManagementScreen = () => {
     setNewName(item.name);
     if (activeTab === 'supplier' || activeTab === 'customer') {
       setSelectedLocationId(item.location_id);
+      setNewLocationName('');
     }
     setShowAddModal(true);
   };
@@ -127,10 +129,16 @@ const ManagementScreen = () => {
       setSubmitting(true);
       
       if (activeTab === 'supplier' || activeTab === 'customer') {
+        let finalLocationId = selectedLocationId;
+        if (!finalLocationId && newLocationName.trim()) {
+          const locRes = await LocationService.createLocation({ name: newLocationName.trim() });
+          finalLocationId = locRes.data.id;
+        }
+
         const entityData = {
           name: newName.trim(),
           type: activeTab,
-          location_id: selectedLocationId || undefined,
+          location_id: finalLocationId || undefined,
         };
         if (editingItem) {
           await EntityService.updateEntity(editingItem.id, entityData);
@@ -151,10 +159,19 @@ const ManagementScreen = () => {
         }
       }
 
+      let localizedAction = '';
+      if (language === 'gu') {
+        localizedAction = editingItem 
+          ? `માહિતી સફળતાપૂર્વક અપડેટ થઈ ગઈ` 
+          : `સફળતાપૂર્વક ઉમેરાઈ ગયું`;
+      } else {
+        localizedAction = editingItem ? 'updated successfully' : 'added successfully';
+      }
+
       Toast.show({
         type: 'success',
-        text1: editingItem ? 'Updated' : 'Success',
-        text2: `Item ${editingItem ? 'updated' : 'added'} successfully`,
+        text1: editingItem ? (language === 'gu' ? 'અપડેટ સફળ થયું' : 'Updated') : (language === 'gu' ? 'સફળતા' : 'Success'),
+        text2: `${activeEntityName} "${newName.trim()}" ${localizedAction}`,
       });
 
       handleCloseModal();
@@ -180,6 +197,7 @@ const ManagementScreen = () => {
     setEditingItem(null);
     setNewName('');
     setSelectedLocationId(null);
+    setNewLocationName('');
   };
 
   const renderItem = ({ item }: { item: any }) => (
@@ -275,7 +293,11 @@ const ManagementScreen = () => {
           renderItem={renderItem}
           ListEmptyComponent={() => (
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>{t.noLocation}</Text>
+              <Text style={styles.emptyText}>
+                {language === 'gu'
+                  ? `કોઈ ${activeEntityName} મળ્યા નથી`
+                  : `No ${activeEntityName.toLowerCase()} found`}
+              </Text>
             </View>
           )}
         />
@@ -331,8 +353,8 @@ const ManagementScreen = () => {
                         setShowLocationPicker(true);
                       }}
                     >
-                      <Text style={[styles.pickerText, selectedLocationId ? { color: theme.colors.text } : null]}>
-                        {selectedLocationId ? extraData.find(l => l.id === selectedLocationId)?.name : t.selectLocation}
+                      <Text style={[styles.pickerText, (selectedLocationId || newLocationName) ? { color: theme.colors.text } : null]}>
+                        {newLocationName ? newLocationName : (selectedLocationId ? extraData.find(l => l.id === selectedLocationId)?.name : t.selectLocation)}
                       </Text>
                       <ChevronDown size={20} color={theme.colors.textSecondary} />
                     </TouchableOpacity>
@@ -375,7 +397,7 @@ const ManagementScreen = () => {
                   <View style={styles.modalSearch}>
                     <Search size={18} color={theme.colors.textSecondary} />
                     <TextInput 
-                      placeholder={t.searchLocations} 
+                      placeholder={t.searchOrAddNew} 
                       style={styles.modalSearchInput}
                       value={locSearchQuery}
                       onChangeText={setLocSearchQuery}
@@ -398,9 +420,25 @@ const ManagementScreen = () => {
                       </TouchableOpacity>
                     )}
                     ListEmptyComponent={() => (
-                      <View style={{ padding: 20, alignItems: 'center' }}>
-                        <Text style={{ color: theme.colors.textSecondary }}>{t.noLocationsFound}</Text>
-                      </View>
+                      locSearchQuery.length > 0 ? (
+                        <TouchableOpacity 
+                          style={styles.addNewItem}
+                          onPress={() => {
+                            setNewLocationName(locSearchQuery);
+                            setSelectedLocationId(null);
+                            setShowLocationPicker(false);
+                          }}
+                        >
+                          <Plus size={18} color={theme.colors.primary} />
+                          <Text style={styles.addNewItemText}>
+                            {t.addAsNewLocation.replace('{query}', locSearchQuery)}
+                          </Text>
+                        </TouchableOpacity>
+                      ) : (
+                        <View style={{ padding: 20, alignItems: 'center' }}>
+                          <Text style={{ color: theme.colors.textSecondary }}>{t.noLocationsFound}</Text>
+                        </View>
+                      )
                     )}
                   />
                 </View>
@@ -723,6 +761,17 @@ const styles = StyleSheet.create({
   emptyText: {
     ...theme.typography.body,
     color: theme.colors.textSecondary,
+  },
+  addNewItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    gap: 8,
+  },
+  addNewItemText: {
+    ...theme.typography.body,
+    color: theme.colors.primary,
+    fontWeight: '600',
   },
 });
 

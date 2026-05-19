@@ -192,6 +192,8 @@ export interface Translations {
   adminTotalStock: string;
   adminTotalPurchases: string;
   adminTotalSales: string;
+  logoutBtn: string;
+  addAsNewLocation: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -266,7 +268,7 @@ export const translations: Record<Language, Translations> = {
     exportBtn: 'Export',
     transactionDetails: 'Transaction Details',
     productLabel: 'PRODUCT',
-    partyLabel: 'PARTY',
+    partyLabel: 'Party',
     typeLabel: 'TYPE',
     dateTimeLabel: 'DATE & TIME',
     unitPrice: 'Unit Price',
@@ -348,6 +350,8 @@ export const translations: Record<Language, Translations> = {
     adminTotalStock: "Customer's Total Stock",
     adminTotalPurchases: "Customer's Total Purchases",
     adminTotalSales: "Customer's Total Sales",
+    logoutBtn: 'Logout',
+    addAsNewLocation: 'Add "{query}" as new location',
   },
 
   gu: {
@@ -503,5 +507,7 @@ export const translations: Record<Language, Translations> = {
     adminTotalStock: 'ગ્રાહકનો કુલ સ્ટોક',
     adminTotalPurchases: 'ગ્રાહકની કુલ ખરીદી',
     adminTotalSales: 'ગ્રાહકનું કુલ વેચાણ',
+    logoutBtn: 'લોગઆઉટ',
+    addAsNewLocation: '"{query}" ને નવું સ્થાન તરીકે ઉમેરો',
   },
 };
