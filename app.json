@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "RJV Metal",
+    "slug": "rjv-metal-stock-manager",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/Logo_2.png",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/Logo_2.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/Logo_2.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "softwareKeyboardLayoutMode": "resize",
+      "package": "com.rjvmetal.stockmanager"
+    },
+    "web": {
+      "favicon": "./assets/Logo_2.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "113d3252-c9de-4808-8fef-09957714d053"
+      }
+    },
+    "plugins": [
+      "@react-native-community/datetimepicker"
+    ]
+  }
+}
