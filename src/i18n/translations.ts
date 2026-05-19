@@ -194,6 +194,20 @@ export interface Translations {
   adminTotalSales: string;
   logoutBtn: string;
   addAsNewLocation: string;
+  tutorialTitleDashboard: string;
+  tutorialDescDashboard: string;
+  tutorialTitleProducts: string;
+  tutorialDescProducts: string;
+  tutorialTitleManagement: string;
+  tutorialDescManagement: string;
+  tutorialTitleStock: string;
+  tutorialDescStock: string;
+  tutorialTitleHistory: string;
+  tutorialDescHistory: string;
+  tutorialNext: string;
+  tutorialBack: string;
+  tutorialFinish: string;
+  tutorialSkip: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -352,6 +366,20 @@ export const translations: Record<Language, Translations> = {
     adminTotalSales: "Customer's Total Sales",
     logoutBtn: 'Logout',
     addAsNewLocation: 'Add "{query}" as new location',
+    tutorialTitleDashboard: 'Welcome to RJV Metal',
+    tutorialDescDashboard: 'View your total stock, sales, purchases, and net balance summary at a glance.',
+    tutorialTitleProducts: 'Manage Products',
+    tutorialDescProducts: 'Tap here to view your product list, check stock levels, and add new products.',
+    tutorialTitleManagement: 'Business Management',
+    tutorialDescManagement: 'Manage your suppliers, customers, categories, and business locations from this screen.',
+    tutorialTitleStock: 'Record Transactions',
+    tutorialDescStock: 'Tap here to log buy/sell transactions. It automatically updates your stock levels.',
+    tutorialTitleHistory: 'Transaction History',
+    tutorialDescHistory: 'Track all your past transactions, apply filters, and export your reports to Excel files.',
+    tutorialNext: 'Next',
+    tutorialBack: 'Back',
+    tutorialFinish: 'Finish',
+    tutorialSkip: 'Skip',
   },
 
   gu: {
@@ -509,5 +537,19 @@ export const translations: Record<Language, Translations> = {
     adminTotalSales: 'ગ્રાહકનું કુલ વેચાણ',
     logoutBtn: 'લોગઆઉટ',
     addAsNewLocation: '"{query}" ને નવું સ્થાન તરીકે ઉમેરો',
+    tutorialTitleDashboard: 'RJV Metal માં આપનું સ્વાગત છે',
+    tutorialDescDashboard: 'તમારા કુલ સ્ટોક, વેચાણ, ખરીદી અને નેટ બેલેન્સનો સારાંશ એક નજરમાં જુઓ.',
+    tutorialTitleProducts: 'પ્રોડક્ટ્સ મેનેજમેન્ટ',
+    tutorialDescProducts: 'તમારી પ્રોડક્ટ લિસ્ટ જોવા, સ્ટોક ચેક કરવા અને નવી પ્રોડક્ટ ઉમેરવા માટે અહીં ટેપ કરો.',
+    tutorialTitleManagement: 'બિઝનેસ મેનેજમેન્ટ',
+    tutorialDescManagement: 'આ સ્ક્રીન પરથી તમારા સપ્લાયર્સ, ગ્રાહકો, કેટેગરી અને વ્યવસાયના સ્થળો મેનેજ કરો.',
+    tutorialTitleStock: 'વ્યવહારોની નોંધણી',
+    tutorialDescStock: 'ખરીદી/વેચાણના વ્યવહારો નોંધવા માટે અહીં ટેપ કરો. તે આપમેળે તમારો સ્ટોક અપડેટ કરશે.',
+    tutorialTitleHistory: 'વ્યવહારોની હિસ્ટ્રી',
+    tutorialDescHistory: 'તમારા તમામ ભૂતકાળના વ્યવહારો ટ્રૅક કરો, ફિલ્ટર્સ લાગુ કરો અને તમારા રિપોર્ટ્સ એક્સેલ ફાઇલોમાં એક્સપોર્ટ કરો.',
+    tutorialNext: 'આગળ',
+    tutorialBack: 'પાછળ',
+    tutorialFinish: 'પૂર્ણ',
+    tutorialSkip: 'સ્કિપ કરો',
   },
 };

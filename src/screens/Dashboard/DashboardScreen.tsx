@@ -4,12 +4,13 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { theme } from '../../theme';
-import { Package, ArrowUpRight, ArrowDownLeft, History, Users, ChevronRight, LogOut } from 'lucide-react-native';
+import { Package, ArrowUpRight, ArrowDownLeft, History, Users, ChevronRight, LogOut, HelpCircle } from 'lucide-react-native';
 import { DashboardService, authEvents, AUTH_TOKEN_KEY } from '../../services/api';
 import { IS_LOGGED_IN_KEY } from '../Auth/AuthScreen';
 import LineChart from 'react-native-chart-kit/dist/line-chart';
 import PieChart from 'react-native-chart-kit/dist/PieChart';
 import { useLanguage } from '../../context/LanguageContext';
+import { useTutorial } from '../../context/TutorialContext';
 import { getFormattedDate, toGujaratiNumerals } from '../../i18n/translations';
 
 const screenWidth = Dimensions.get('window').width;
@@ -33,6 +34,7 @@ const StatCard = ({ title, value, icon: Icon, color, isCurrency, lang }: any) =>
 const DashboardScreen = () => {
   const navigation = useNavigation<any>();
   const { language, t, setLanguage } = useLanguage();
+  const { startTutorial } = useTutorial();
   const [role, setRole] = useState<string>('customer');
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<any>({
@@ -137,26 +139,37 @@ const DashboardScreen = () => {
             <Text style={styles.greeting}>{t.overview}</Text>
             <Text style={styles.date}>{getFormattedDate(language)}</Text>
           </View>
-          {/* Language pill toggle */}
-          <View style={styles.langToggle}>
+          <View style={styles.headerRight}>
+            {/* Help Button */}
             <TouchableOpacity
-              style={[styles.langOption, language === 'en' && styles.langOptionActive]}
-              onPress={() => setLanguage('en')}
+              style={styles.helpButton}
+              onPress={startTutorial}
               activeOpacity={0.8}
             >
-              <Text style={[styles.langOptionText, language === 'en' && styles.langOptionTextActive]}>
-                EN
-              </Text>
+              <HelpCircle size={20} color={theme.colors.accent} />
             </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.langOption, language === 'gu' && styles.langOptionActive]}
-              onPress={() => setLanguage('gu')}
-              activeOpacity={0.8}
-            >
-              <Text style={[styles.langOptionText, language === 'gu' && styles.langOptionTextActive]}>
-                ગુ
-              </Text>
-            </TouchableOpacity>
+
+            {/* Language pill toggle */}
+            <View style={styles.langToggle}>
+              <TouchableOpacity
+                style={[styles.langOption, language === 'en' && styles.langOptionActive]}
+                onPress={() => setLanguage('en')}
+                activeOpacity={0.8}
+              >
+                <Text style={[styles.langOptionText, language === 'en' && styles.langOptionTextActive]}>
+                  EN
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.langOption, language === 'gu' && styles.langOptionActive]}
+                onPress={() => setLanguage('gu')}
+                activeOpacity={0.8}
+              >
+                <Text style={[styles.langOptionText, language === 'gu' && styles.langOptionTextActive]}>
+                  ગુ
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
 
@@ -491,6 +504,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: theme.colors.error,
     fontWeight: '700',
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 4,
+  },
+  helpButton: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: theme.colors.surface,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 1,
   },
 });
 

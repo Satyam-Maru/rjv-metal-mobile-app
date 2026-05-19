@@ -22,6 +22,9 @@ import AuthScreen, { IS_LOGGED_IN_KEY } from './src/screens/Auth/AuthScreen';
 import AdminCustomersScreen from './src/screens/Admin/AdminCustomersScreen';
 import AdminCustomerDetailsScreen from './src/screens/Admin/AdminCustomerDetailsScreen';
 import { authEvents } from './src/services/api';
+import { navigationRef } from './src/services/navigation';
+import { TutorialProvider } from './src/context/TutorialContext';
+import { TutorialOverlay } from './src/components/TutorialOverlay';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -222,7 +225,7 @@ export default function App() {
           <View style={styles.container} onLayout={onLayoutRootView}>
           <StatusBar style="dark" />
           {isLoggedIn ? (
-            <NavigationContainer theme={{
+            <NavigationContainer ref={navigationRef} theme={{
               ...DefaultTheme,
               colors: {
                 ...DefaultTheme.colors,
@@ -234,7 +237,10 @@ export default function App() {
                 notification: theme.colors.accent,
               }
             }}>
-              <AppStack />
+              <TutorialProvider>
+                <AppStack />
+                <TutorialOverlay />
+              </TutorialProvider>
             </NavigationContainer>
           ) : (
             <AuthScreen onLoginSuccess={() => setIsLoggedIn(true)} />
@@ -248,7 +254,7 @@ export default function App() {
               ]}
             >
               <Image 
-                source={require('./assets/Logo_2.png')} 
+                source={require('./assets/logo.png')} 
                 style={styles.logo}
                 resizeMode="contain"
               />
